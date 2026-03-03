@@ -3,161 +3,226 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TaskFlow – Premium Project Management SaaS</title>
+  <title>TaskFlow – NYC Graffiti SaaS</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Boogaloo&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet" />
   <style>
-    @layer utilities {
-      .bg-gradient-primary { background: linear-gradient(90deg, #ea580c, #f97316, #fbbf24); }
-      .text-gradient-primary { background: linear-gradient(90deg, #ea580c, #f97316, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-      .glass {
-        background: rgba(255,255,255,0.08);
-        border: 1px solid rgba(255,165,0,0.3);
-        backdrop-filter: blur(12px);
-        box-shadow: 0 4px 30px rgba(0,0,0,0.5);
-      }
-      .orb {
-        position: absolute;
-        border-radius: 50%;
-        background: radial-gradient(circle at 30% 30%, rgba(255,165,0,0.8), transparent);
-        filter: blur(40px);
-        animation: float 6s ease-in-out infinite;
-      }
-      @keyframes float {
-        0%,100% { transform: translateY(0) translateX(0); }
-        50% { transform: translateY(-20px) translateX(20px); }
-      }
-      .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
-      .fade-in.visible { opacity: 1; transform: none; }
+    /* Core fonts */
+    .font-head { font-family: 'Boogaloo', 'Permanent Marker', cursive; }
+    .font-body { font-family: 'Rajdhani', sans-serif; }
+    /* Concrete texture (subtle noise) */
+    .bg-concrete {
+      background-color: #1a1a1a;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxMiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiMzMzMiIGZpbGwtb3BhY2l0eT0iMC4xNSIvPjwvc3ZnPg==');
+      background-size: 30px 30px;
     }
-    body { background: #0d0d0d; color: #f3f4f6; }
+    /* Brick wall hero */
+    .bg-brick {
+      background-image: linear-gradient(45deg, #2c0e0e 25%, transparent 25%, transparent 75%, #2c0e0e 75%),
+                        linear-gradient(45deg, #2c0e0e 25%, transparent 25%, transparent 75%, #2c0e0e 75%);
+      background-size: 40px 40px;
+      background-position: 0 0,20px 20px;
+    }
+    /* Spray paint splatter */
+    .spray {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(30px);
+      opacity: 0.7;
+      animation: drip 6s ease-in-out infinite;
+    }
+    @keyframes drip {
+      0% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(20px) scale(1.2); }
+      100% { transform: translateY(0) scale(1); }
+    }
+    /* Neon flicker */
+    .neon-flicker {
+      animation: flicker 1.5s infinite alternate;
+    }
+    @keyframes flicker { from { opacity: 1; } to { opacity: 0.6; } }
+    /* Card tilt */
+    .tilt:hover { transform: rotate3d(0,0,1,3deg) scale(1.03); }
+    /* Graffiti tag watermark */
+    .tag-watermark::after {
+      content: "Raven";
+      position: absolute;
+      bottom: 5px; right: 5px;
+      font-family: 'Permanent Marker', cursive;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.2);
+      transform: rotate(-15deg);
+    }
+    /* Sneaker CSS art */
+    .sneaker {
+      width: 80px;
+      height: 120px;
+      position: relative;
+      background: #ff3c00;
+      border-radius: 10px 10px 30px 30px;
+      margin: auto;
+    }
+    .sneaker::before {
+      content: '';
+      position: absolute;
+      top: 10%; left: 10%;
+      width: 60%; height: 60%;
+      background: #ffe600;
+      border-radius: 5px;
+      transform: rotate(-10deg);
+    }
+    .sneaker::after {
+      content: '';
+      position: absolute;
+      bottom: 5%; left: 20%;
+      width: 60%; height: 20%;
+      background: #00d4ff;
+      border-radius: 3px;
+    }
+    body { color: #f0f0f0; }
   </style>
 </head>
-<body class="font-sans antialiased">
-  <!-- Floating Orbs -->
-  <div class="orb" style="width:200px;height:200px;top:10%;left:15%;"></div>
-  <div class="orb" style="width:150px;height:150px;bottom:20%;right:10%;"></div>
-  <div class="orb" style="width:120px;height:120px;top:60%;left:70%;"></div>
-
-  <!-- Navigation -->
-  <nav class="fixed w-full z-10 bg-black/30 backdrop-blur-md">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-      <a href="#" class="text-2xl font-bold text-gradient-primary">TaskFlow</a>
+<body class="font-body bg-concrete relative">
+  <!-- Nav -->
+  <nav class="fixed w-full bg-black/70 backdrop-blur-md z-10">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="#" class="text-2xl font-head text-[#ff3c00]">TaskFlow</a>
       <div class="space-x-6 hidden md:block">
-        <a href="#features" class="hover:text-orange-300">Features</a>
-        <a href="#pricing" class="hover:text-orange-300">Pricing</a>
-        <a href="#testimonials" class="hover:text-orange-300">Testimonials</a>
-        <a href="#contact" class="hover:text-orange-300">Contact</a>
+        <a href="#features" class="hover:text-[#ffe600]">Features</a>
+        <a href="#sneakers" class="hover:text-[#ffe600]">Sneakers</a>
+        <a href="#pricing" class="hover:text-[#ffe600]">Pricing</a>
+        <a href="#blog" class="hover:text-[#ffe600]">Blog</a>
+        <a href="#contact" class="hover:text-[#ffe600]">Contact</a>
       </div>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="min-h-screen flex items-center justify-center text-center pt-20 pb-12" id="hero">
-    <div class="max-w-4xl mx-auto px-4 fade-in">
-      <h1 class="text-5xl md:text-6xl font-extrabold text-gradient-primary mb-6">Streamline Your Projects with TaskFlow</h1>
-      <p class="text-lg md:text-xl text-gray-300 mb-8">All‑in‑one project management SaaS. Visual pipelines, real‑time collaboration, AI‑driven insights.</p>
-      <a href="#contact" class="inline-block bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-6 rounded-full shadow-lg transition transform hover:scale-105">Get Started Free</a>
+  <!-- Hero -->
+  <section class="min-h-screen flex items-center justify-center text-center pt-20 pb-12 bg-brick relative overflow-hidden" id="hero">
+    <!-- Spray splatters -->
+    <div class="spray" style="width:150px;height:150px;background:#ff3c00;top:10%;left:15%;"></div>
+    <div class="spray" style="width:120px;height:120px;background:#ffe600;bottom:20%;right:10%;"></div>
+    <div class="spray" style="width:180px;height:180px;background:#00d4ff;top:40%;right:25%;"></div>
+    <div class="max-w-2xl mx-auto px-4 tag-watermark">
+      <h1 class="font-head text-5xl md:text-6xl text-[#ff3c00] mb-4 drop-shadow-[0_0_5px_#ffe600]">TaskFlow</h1>
+      <p class="text-xl md:text-2xl text-[#ffe600] mb-6">Premium SaaS, NYC subway vibe – turn chaos into flow.</p>
+      <a href="#contact" class="inline-block bg-[#ff3c00] hover:bg-[#ffe600] text-black font-bold py-3 px-6 rounded-full neon-flicker">Start Free Trial</a>
     </div>
   </section>
 
   <!-- Features -->
-  <section id="features" class="py-20 bg-black/10">
+  <section id="features" class="py-20 tag-watermark">
     <div class="max-w-6xl mx-auto px-4">
-      <h2 class="text-4xl font-bold text-center text-gradient-primary mb-12 fade-in">Features</h2>
+      <h2 class="text-4xl font-head text-center text-[#00d4ff] mb-12">Features</h2>
       <div class="grid md:grid-cols-3 gap-8">
-        <div class="glass p-6 rounded-xl fade-in">
-          <h3 class="text-2xl font-semibold mb-4 text-orange-300">Kanban Boards</h3>
-          <p class="text-gray-300">Drag‑and‑drop boards with unlimited columns, custom labels and real‑time sync.</p>
+        <div class="bg-black/60 p-6 rounded-xl tilt">
+          <h3 class="text-2xl font-head text-[#ff3c00] mb-3">Graffiti Kanban</h3>
+          <p>Drag‑and‑drop boards with neon spray, unlimited lanes, live sync.</p>
         </div>
-        <div class="glass p-6 rounded-xl fade-in">
-          <h3 class="text-2xl font-semibold mb-4 text-orange-300">AI Insights</h3>
-          <p class="text-gray-300">Predictive timelines, workload balancing, and smart suggestions powered by TaskFlow AI.</p>
+        <div class="bg-black/60 p-6 rounded-xl tilt">
+          <h3 class="text-2xl font-head text-[#ff3c00] mb-3">AI Insights</h3>
+          <p>Predictive timelines, workload balancing, auto‑tagging – all in real‑time.</p>
         </div>
-        <div class="glass p-6 rounded-xl fade-in">
-          <h3 class="text-2xl font-semibold mb-4 text-orange-300">Integrations</h3>
-          <p class="text-gray-300">Seamless connections to Slack, GitHub, Google Calendar, and more.</p>
+        <div class="bg-black/60 p-6 rounded-xl tilt">
+          <h3 class="text-2xl font-head text-[#ff3c00] mb-3">Integrations</h3>
+          <p>Slack, GitHub, Google Calendar, Zapier – one click, no hassle.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sneaker Gallery -->
+  <section id="sneakers" class="py-20 bg-black/30 tag-watermark">
+    <div class="max-w-5xl mx-auto px-4 text-center">
+      <h2 class="text-4xl font-head text-[#ffe600] mb-12">Fresh Kicks Gallery</h2>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-black/60 p-6 rounded-xl tilt flex flex-col items-center">
+          <div class="sneaker mb-4"></div>
+          <h3 class="text-xl font-head text-[#ff3c00]">Air Max Zero</h3>
+        </div>
+        <div class="bg-black/60 p-6 rounded-xl tilt flex flex-col items-center">
+          <div class="sneaker mb-4"></div>
+          <h3 class="text-xl font-head text-[#ff3c00]">Jordan Legacy</h3>
+        </div>
+        <div class="bg-black/60 p-6 rounded-xl tilt flex flex-col items-center">
+          <div class="sneaker mb-4"></div>
+          <h3 class="text-xl font-head text-[#ff3c00]">New Balance Grid</h3>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Pricing -->
-  <section id="pricing" class="py-20">
+  <section id="pricing" class="py-20 tag-watermark">
     <div class="max-w-5xl mx-auto px-4 text-center">
-      <h2 class="text-4xl font-bold text-gradient-primary mb-12 fade-in">Pricing</h2>
+      <h2 class="text-4xl font-head text-[#00d4ff] mb-12">Pricing</h2>
       <div class="grid md:grid-cols-2 gap-8">
-        <div class="glass p-8 rounded-xl fade-in">
-          <h3 class="text-2xl font-semibold mb-4 text-orange-300">Starter</h3>
-          <p class="text-5xl font-bold mb-4">€49<span class="text-base font-medium">/mo</span></p>
-          <ul class="text-left mb-6 space-y-2">
+        <div class="bg-black/60 p-8 rounded-xl tilt">
+          <h3 class="text-2xl font-head text-[#ff3c00] mb-4">Starter</h3>
+          <p class="text-5xl font-bold mb-4">€49<span class="text-base">/mo</span></p>
+          <ul class="text-left space-y-2 mb-6">
             <li>✓ Unlimited projects</li>
-            <li>✓ Basic AI insights</li>
+            <li>✓ Basic AI</li>
             <li>✓ Email support</li>
           </ul>
-          <a href="#contact" class="block w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg">Choose Starter</a>
+          <a href="#contact" class="block w-full bg-[#ff3c00] hover:bg-[#ffe600] text-black py-2 rounded">Choose Starter</a>
         </div>
-        <div class="glass p-8 rounded-xl fade-in">
-          <h3 class="text-2xl font-semibold mb-4 text-orange-300">Pro</h3>
-          <p class="text-5xl font-bold mb-4">€149<span class="text-base font-medium">/mo</span></p>
-          <ul class="text-left mb-6 space-y-2">
-            <li>✓ All Starter features</li>
-            <li>✓ Advanced AI analytics</li>
+        <div class="bg-black/60 p-8 rounded-xl tilt">
+          <h3 class="text-2xl font-head text-[#ff3c00] mb-4">Pro</h3>
+          <p class="text-5xl font-bold mb-4">€149<span class="text-base">/mo</span></p>
+          <ul class="text-left space-y-2 mb-6">
+            <li>✓ All Starter</li>
+            <li>✓ Advanced AI</li>
             <li>✓ Priority support</li>
           </ul>
-          <a href="#contact" class="block w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg">Choose Pro</a>
+          <a href="#contact" class="block w-full bg-[#ff3c00] hover:bg-[#ffe600] text-black py-2 rounded">Choose Pro</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Testimonials -->
-  <section id="testimonials" class="py-20 bg-black/10">
-    <div class="max-w-5xl mx-auto px-4">
-      <h2 class="text-4xl font-bold text-center text-gradient-primary mb-12 fade-in">What Our Customers Say</h2>
+  <!-- Blog (Clank cards) -->
+  <section id="blog" class="py-20 bg-black/20 tag-watermark">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-4xl font-head text-center text-[#ff3c00] mb-12">Latest from the Grid</h2>
       <div class="grid md:grid-cols-3 gap-8">
-        <div class="glass p-6 rounded-xl fade-in">
-          <p class="italic text-gray-300 mb-4">"TaskFlow transformed our workflow – we ship features 2x faster!"</p>
-          <p class="font-semibold text-orange-300">- Lena, CTO @ NovaTech</p>
+        <!-- Reuse previous Clank cards -->
+        <div class="bg-black/60 p-4 rounded-xl tilt">
+          <img src="https://upload.wikimedia.org/wikipedia/en/5/5e/Clank.png" alt="Clank" class="w-full h-48 object-cover rounded-md mb-4" />
+          <h3 class="text-xl font-head text-[#ffe600] mb-2">Clank: The Robot Who Rewired the Future</h3>
+          <p class="text-gray-300 text-sm mb-2">When the humble sidekick becomes the mastermind behind a new wave of automation, the industry takes notice.</p>
+          <a href="#" class="text-[#ff3c00] hover:underline">Read More →</a>
         </div>
-        <div class="glass p-6 rounded-xl fade-in">
-          <p class="italic text-gray-300 mb-4">"The AI insights saved us countless hours of planning."</p>
-          <p class="font-semibold text-orange-300">- Marco, Product Lead @ BrightStart</p>
+        <div class="bg-black/60 p-4 rounded-xl tilt">
+          <img src="https://upload.wikimedia.org/wikipedia/en/5/5e/Clank.png" alt="Clank" class="w-full h-48 object-cover rounded-md mb-4" />
+          <h3 class="text-xl font-head text-[#ffe600] mb-2">AI Companions – What Clank Teaches Us</h3>
+          <p class="text-gray-300 text-sm mb-2">Exploring how a lovable robot can inspire next‑gen AI assistants that learn, adapt, and collaborate.</p>
+          <a href="#" class="text-[#ff3c00] hover:underline">Read More →</a>
         </div>
-        <div class="glass p-6 rounded-xl fade-in">
-          <p class="italic text-gray-300 mb-4">"Integrations with Slack & GitHub are seamless."</p>
-          <p class="font-semibold text-orange-300">- Sofia, Project Manager @ CloudWorks</p>
+        <div class="bg-black/60 p-4 rounded-xl tilt">
+          <img src="https://upload.wikimedia.org/wikipedia/en/5/5e/Clank.png" alt="Clank" class="w-full h-48 object-cover rounded-md mb-4" />
+          <h3 class="text-xl font-head text-[#ff3c00] mb-2">From Ratchet's Sidekick to SaaS</h3>
+          <p class="text-gray-300 text-sm mb-2">A deep dive into how partnership dynamics in games translate to client‑provider relationships in SaaS.</p>
+          <a href="#" class="text-[#ffe600] hover:underline">Read More →</a>
         </div>
       </div>
     </div>
   </section>
 
   <!-- CTA -->
-  <section id="contact" class="py-20 text-center">
-    <div class="max-w-3xl mx-auto px-4 fade-in">
-      <h2 class="text-4xl font-bold text-gradient-primary mb-6">Ready to Boost Your Productivity?</h2>
-      <p class="text-lg text-gray-300 mb-8">Start your 14‑day free trial today. No credit card required.</p>
-      <a href="#" class="inline-block bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105">Start Free Trial</a>
+  <section id="contact" class="py-20 text-center tag-watermark">
+    <div class="max-w-3xl mx-auto px-4">
+      <h2 class="text-4xl font-head text-[#00d4ff] mb-6">Ready to Hack Your Workflow?</h2>
+      <p class="text-xl text-[#ffe600] mb-8">Start your 14‑day free trial – no credit card required.</p>
+      <a href="#" class="inline-block bg-[#ff3c00] hover:bg-[#ffe600] text-black font-bold py-3 px-8 rounded-full neon-flicker">Start Free Trial</a>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="bg-black/30 py-8">
+  <footer class="bg-black/70 py-8">
     <div class="max-w-6xl mx-auto px-4 text-center text-gray-400">
-      <p>&copy; $(new Date().getFullYear()) TaskFlow. All rights reserved.</p>
+      <p>&copy; <script>document.write(new Date().getFullYear())</script> TaskFlow. All rights reserved.</p>
     </div>
   </footer>
-
-  <script>
-    // Intersection Observer for fade‑in
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-  </script>
 </body>
 </html>
