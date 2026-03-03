@@ -3,224 +3,223 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TaskFlow – Hip‑Hop Graffiti Portfolio</title>
+  <title>TaskFlow – Premium SaaS Landing</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet" />
   <style>
-    /* Fonts */
-    .font-head {font-family: 'Permanent Marker', cursive;}
-    .font-body {font-family: 'Rajdhani', sans-serif;}
-    /* Dark concrete bg */
-    body {background:#111111;color:#f0f0f0;overflow-x:hidden;}
-    .bg-concrete {background-color:#111111;background-image:url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxMiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIGZpbGw9IiMzMzMiIGZpbGwtb3BhY2l0eT0iMC4xNSIvPjwvc3ZnPg==');background-size:30px 30px;}
-    /* Brick wall hero */
-    .bg-brick {background-image:linear-gradient(45deg,#2c0e0e 25%,transparent 25%,transparent 75%,#2c0e0e 75%),linear-gradient(45deg,#2c0e0e 25%,transparent 25%,transparent 75%,#2c0e0e 75%);background-size:40px 40px;background-position:0 0,20px 20px;}
-    /* Spray drip */
-    .drip {position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:80px;height:120px;background:linear-gradient(180deg,#ff3c00,#ffe600,#00d4ff,#39ff14);filter:blur(30px);animation:drip 5s infinite ease-in-out;}
-    @keyframes drip{0%{transform:translate(-50%,0) scale(1);}50%{transform:translate(-50%,20px) scale(1.2);}100%{transform:translate(-50%,0) scale(1);}}
-    /* Neon glow */
-    .neon {box-shadow:0 0 5px var(--glow),0 0 10px var(--glow),0 0 20px var(--glow),0 0 30px var(--glow);} 
-    .glow-red {--glow:#ff3c00;}
-    .glow-yellow {--glow:#ffe600;}
-    .glow-cyan {--glow:#00d4ff;}
-    .glow-green {--glow:#39ff14;}
-    /* Card tilt */
-    .tilt:hover{transform:rotate3d(0,0,1,3deg) scale(1.03);}    
-    /* Sneaker CSS */
-    .sneaker{width:80px;height:120px;background:#ff3c00;border-radius:10px 10px 30px 30px;position:relative;margin:auto;}
-    .sneaker::before{content:'';position:absolute;top:12%;left:12%;width:60%;height:60%;background:#ffe600;border-radius:5px;transform:rotate(-12deg);}
-    .sneaker::after{content:'';position:absolute;bottom:8%;left:22%;width:56%;height:20%;background:#00d4ff;border-radius:3px;}
-    /* Tag watermark */
-    .tag::after{content:"Raven";position:absolute;bottom:4px;right:4px;font-family:'Permanent Marker',cursive;font-size:0.75rem;color:rgba(255,255,255,0.2);transform:rotate(-15deg);}
-    /* GSAP initial hidden */
-    .gsap-hidden{opacity:0;transform:translateY(30px);}
+    /* Base colors */
+    :root {
+      --bg:#09090b;
+      --indigo:#6366f1;
+      --purple:#a855f7;
+      --cyan:#06b6d4;
+      --gradient:linear-gradient(90deg,var(--indigo),var(--purple),var(--cyan));
+    }
+    body {background:var(--bg);color:#f0f0f0;font-family:sans-serif;}
+    .nav {backdrop-filter:blur(12px);background:rgba(9,9,11,0.6);}    
+    .logo {color:var(--indigo);text-shadow:0 0 4px var(--indigo);font-weight:600;}
+    .gradient-text {background:var(--gradient);-webkit-background-clip:text;background-clip:text;color:transparent;}
+    .card {
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(99,102,241,0.2);
+      transition:transform .2s,box-shadow .2s;
+    }
+    .card:hover {transform:translateY(-4px);box-shadow:0 0 20px rgba(99,102,241,0.1);}
+    .cta-btn {
+      background:var(--indigo);
+      color:#fff;
+      box-shadow:0 0 8px var(--indigo);
+      transition:background .2s,box-shadow .2s,transform .2s;
+    }
+    .cta-btn:hover {background:var(--purple);box-shadow:0 0 12px var(--purple);transform:scale(1.03);}
+    .section-head {color:var(--purple);text-shadow:0 0 4px var(--purple);}
+    .orb {
+      position:absolute; border-radius:50%; filter:blur(60px); opacity:0.15; pointer-events:none;
+    }
+    .orb.indigo {background:var(--indigo); width:200px; height:200px; top:10%; left:15%;}
+    .orb.purple {background:var(--purple); width:300px; height:300px; bottom:5%; right:10%;}
+    .fade-in {opacity:0; transform:translateY(20px); transition:opacity .6s ease-out, transform .6s ease-out;}
+    .fade-in.visible {opacity:1; transform:none;}
   </style>
 </head>
-<body class="font-body bg-concrete">
-  <!-- Three.js particle overlay -->
-  <canvas id="bgCanvas" class="fixed inset-0 z-0"></canvas>
-  <script>
-    // Particle background (colored particles)
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('bgCanvas'), alpha:true});
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    const count = 2000;
-    const geom = new THREE.BufferGeometry();
-    const pos = new Float32Array(count*3);
-    const cols = [];
-    const colors = [0xff3c00,0xffe600,0x00d4ff,0x39ff14];
-    for(let i=0;i<count;i++){
-      pos[i*3]= (Math.random()-0.5)*300;
-      pos[i*3+1]= (Math.random()-0.5)*300;
-      pos[i*3+2]= (Math.random()-0.5)*300;
-      cols.push(...new THREE.Color(colors[Math.floor(Math.random()*colors.length)]).toArray());
-    }
-    geom.setAttribute('position', new THREE.Float32BufferAttribute(pos,3));
-    geom.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(cols),3));
-    const mat = new THREE.PointsMaterial({size:2, vertexColors:true});
-    const points = new THREE.Points(geom, mat);
-    scene.add(points);
-    camera.position.z = 150;
-    function animate(){
-      requestAnimationFrame(animate);
-      points.rotation.x+=0.0003;
-      points.rotation.y+=0.0006;
-      renderer.render(scene,camera);
-    }
-    animate();
-    window.addEventListener('resize',()=>{camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();renderer.setSize(window.innerWidth,window.innerHeight);});
-  </script>
-
+<body class="font-body">
   <!-- Nav -->
-  <nav class="fixed w-full bg-black/70 backdrop-blur-md z-10">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      <a href="#" class="text-2xl font-head text-cyan-400 neon glow-cyan">TaskFlow</a>
+  <nav class="nav sticky top-0 w-full z-10 py-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between px-4">
+      <a href="#" class="logo text-2xl">TaskFlow</a>
       <div class="space-x-6 hidden md:block">
-        <a href="#features" class="hover:text-[#ff3c00]">Features</a>
-        <a href="#sneakers" class="hover:text-[#ff3c00]">Sneakers</a>
-        <a href="#pricing" class="hover:text-[#ff3c00]">Pricing</a>
-        <a href="#blog" class="hover:text-[#ff3c00]">Blog</a>
-        <a href="#contact" class="hover:text-[#ff3c00]">Contact</a>
+        <a href="#features" class="hover:text-indigo-300">Features</a>
+        <a href="#how-it-works" class="hover:text-indigo-300">How it works</a>
+        <a href="#pricing" class="hover:text-indigo-300">Pricing</a>
+        <a href="#testimonials" class="hover:text-indigo-300">Testimonials</a>
+        <a href="#contact" class="hover:text-indigo-300">Contact</a>
       </div>
     </div>
   </nav>
 
   <!-- Hero -->
-  <section id="hero" class="min-h-screen flex items-center justify-center text-center pt-20 pb-12 bg-brick relative overflow-hidden tag">
-    <div class="drip"></div>
-    <div class="max-w-2xl mx-auto px-4 relative z-10">
-      <h1 id="hero-title" class="font-head text-5xl md:text-6xl text-[#ff3c00] mb-6 text-shadow-[2px_2px_0_#ffe600, -2px_-2px_0_#00d4ff] neon glow-red">TaskFlow</h1>
-      <p class="text-xl md:text-2xl text-[#ffe600] mb-8">Premium SaaS meets NYC subway graffiti – flow like a subway train.</p>
-      <a href="#contact" class="inline-block bg-[#ff3c00] hover:bg-[#ffe600] text-black font-bold py-3 px-6 rounded-full neon glow-red pulse">Get Started Free</a>
+  <section class="relative min-h-screen flex items-center justify-center text-center pt-20 pb-12" id="hero">
+    <div class="orb indigo"></div>
+    <div class="orb purple"></div>
+    <div class="max-w-2xl mx-auto px-4 z-10">
+      <h1 class="gradient-text text-5xl md:text-6xl font-bold mb-6">Streamline Your Workflow</h1>
+      <p class="text-lg md:text-xl text-gray-300 mb-8">All‑in‑one project engine with AI‑powered insights, seamless integrations and a sleek, modern UI.</p>
+      <div class="space-x-4">
+        <a href="#contact" class="cta-btn inline-block py-3 px-6 rounded-md font-medium">Start Free Trial</a>
+        <a href="#features" class="inline-block py-3 px-6 rounded-md border border-indigo-400 text-indigo-400 hover:bg-indigo-900">Learn More</a>
+      </div>
     </div>
   </section>
 
   <!-- Features -->
-  <section id="features" class="py-20 tag">
+  <section id="features" class="py-20">
     <div class="max-w-6xl mx-auto px-4">
-      <h2 class="font-head text-4xl text-center text-[#00d4ff] mb-12 gsap-hidden">Features</h2>
+      <h2 class="section-head text-4xl font-bold text-center mb-12 fade-in">Features</h2>
       <div class="grid md:grid-cols-3 gap-8">
-        <div class="bg-black/50 p-6 rounded-xl tilt neon glow-cyan gsap-hidden">
-          <h3 class="font-head text-2xl mb-3 text-[#ff3c00]">Graffiti Kanban</h3>
-          <p>Drag‑and‑drop boards with neon spray, unlimited lanes, live sync.</p>
+        <div class="card p-6 rounded-lg fade-in">
+          <div class="mb-4 text-3xl text-indigo-400">🗂️</div>
+          <h3 class="text-xl font-semibold mb-2 text-indigo-200">Kanban Boards</h3>
+          <p class="text-gray-300">Customizable boards with drag‑and‑drop, real‑time sync and powerful filters.</p>
         </div>
-        <div class="bg-black/50 p-6 rounded-xl tilt neon glow-cyan gsap-hidden">
-          <h3 class="font-head text-2xl mb-3 text-[#ff3c00]">AI Insights</h3>
-          <p>Predictive timelines, workload balancing, auto‑tagging – real‑time.</p>
+        <div class="card p-6 rounded-lg fade-in">
+          <div class="mb-4 text-3xl text-indigo-400">🤖</div>
+          <h3 class="text-xl font-semibold mb-2 text-indigo-200">AI Insights</h3>
+          <p class="text-gray-300">Predictive timelines, workload balancing and smart suggestions built on GPT‑4.</p>
         </div>
-        <div class="bg-black/50 p-6 rounded-xl tilt neon glow-cyan gsap-hidden">
-          <h3 class="font-head text-2xl mb-3 text-[#ff3c00]">Integrations</h3>
-          <p>Slack, GitHub, Google Calendar, Zapier – one click, no hassle.</p>
+        <div class="card p-6 rounded-lg fade-in">
+          <div class="mb-4 text-3xl text-indigo-400">🔌</div>
+          <h3 class="text-xl font-semibold mb-2 text-indigo-200">Integrations</h3>
+          <p class="text-gray-300">Connect Slack, GitHub, Google Calendar and Zapier with a single click.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Sneaker Gallery -->
-  <section id="sneakers" class="py-20 bg-black/30 tag">
-    <div class="max-w-5xl mx-auto px-4 text-center">
-      <h2 class="font-head text-4xl text-[#ffe600] mb-12 gsap-hidden">Fresh Kicks Gallery</h2>
+  <!-- How it Works -->
+  <section id="how-it-works" class="py-20 bg-gray-900/30">
+    <div class="max-w-5xl mx-auto px-4">
+      <h2 class="section-head text-4xl font-bold text-center mb-12 fade-in">How it Works</h2>
       <div class="grid md:grid-cols-3 gap-8">
-        <div class="bg-black/50 p-6 rounded-xl tilt flex flex-col items-center neon glow-yellow gsap-hidden">
-          <div class="sneaker mb-4"></div>
-          <h3 class="font-head text-xl text-[#ff3c00]">Air Max Zero</h3>
+        <div class="fade-in">
+          <div class="text-4xl text-indigo-400 mb-2">1️⃣</div>
+          <h3 class="text-xl font-semibold text-indigo-200 mb-2">Create Your Workspace</h3>
+          <p class="text-gray-300">Set up projects, invite teammates and define your workflow in seconds.</p>
         </div>
-        <div class="bg-black/50 p-6 rounded-xl tilt flex flex-col items-center neon glow-yellow gsap-hidden">
-          <div class="sneaker mb-4"></div>
-          <h3 class="font-head text-xl text-[#ff3c00]">Jordan Legacy</h3>
+        <div class="fade-in">
+          <div class="text-4xl text-indigo-400 mb-2">2️⃣</div>
+          <h3 class="text-xl font-semibold text-indigo-200 mb-2">Add AI‑Driven Tasks</h3>
+          <p class="text-gray-300">Let the AI suggest tasks, estimate effort and automatically prioritize.</p>
         </div>
-        <div class="bg-black/50 p-6 rounded-xl tilt flex flex-col items-center neon glow-yellow gsap-hidden">
-          <div class="sneaker mb-4"></div>
-          <h3 class="font-head text-xl text-[#ff3c00]">New Balance Grid</h3>
+        <div class="fade-in">
+          <div class="text-4xl text-indigo-400 mb-2">3️⃣</div>
+          <h3 class="text-xl font-semibold text-indigo-200 mb-2">Track & Ship</h3>
+          <p class="text-gray-300">Monitor progress on live dashboards and deliver releases faster.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Pricing -->
-  <section id="pricing" class="py-20 tag">
-    <div class="max-w-5xl mx-auto px-4 text-center">
-      <h2 class="font-head text-4xl text-[#00d4ff] mb-12 gsap-hidden">Pricing</h2>
+  <section id="pricing" class="py-20">
+    <div class="max-w-5xl mx-auto px-4">
+      <h2 class="section-head text-4xl font-bold text-center mb-12 fade-in">Pricing</h2>
       <div class="grid md:grid-cols-2 gap-8">
-        <div class="bg-black/50 p-8 rounded-xl tilt neon glow-red gsap-hidden">
-          <h3 class="font-head text-2xl mb-4 text-[#ff3c00]">Starter</h3>
-          <p class="text-5xl font-bold mb-4">€49<span class="text-base">/mo</span></p>
-          <ul class="text-left mb-6 space-y-2">
-            <li>✓ Unlimited projects</li>
-            <li>✓ Basic AI</li>
+        <div class="card p-8 rounded-lg text-center fade-in">
+          <h3 class="text-2xl font-semibold mb-4 text-indigo-200">Free</h3>
+          <p class="text-5xl font-bold mb-4">$0<span class="text-base font-medium">/mo</span></p>
+          <ul class="text-left mb-6 space-y-2 text-gray-300">
+            <li>✓ Unlimited projects (up to 3 members)</li>
+            <li>✓ Basic AI insights</li>
             <li>✓ Email support</li>
           </ul>
-          <a href="#contact" class="block w-full bg-[#ff3c00] hover:bg-[#ffe600] text-black py-2 rounded">Choose Starter</a>
+          <a href="#contact" class="cta-btn block w-full py-2 rounded">Start Free</a>
         </div>
-        <div class="bg-black/50 p-8 rounded-xl tilt neon glow-red gsap-hidden">
-          <h3 class="font-head text-2xl mb-4 text-[#ff3c00]">Pro</h3>
-          <p class="text-5xl font-bold mb-4">€149<span class="text-base">/mo</span></p>
-          <ul class="text-left mb-6 space-y-2">
-            <li>✓ All Starter</li>
-            <li>✓ Advanced AI</li>
+        <div class="card p-8 rounded-lg text-center border-2 border-indigo-500 glow border-indigo-500 fade-in">
+          <h3 class="text-2xl font-semibold mb-4 text-indigo-200">Pro</h3>
+          <p class="text-5xl font-bold mb-4">$49<span class="text-base font-medium">/mo</span></p>
+          <div class="bg-indigo-600 text-white inline-block px-2 py-0.5 rounded mb-4">Popular</div>
+          <ul class="text-left mb-6 space-y-2 text-gray-300">
+            <li>✓ Unlimited members</li>
+            <li>✓ Advanced AI analytics</li>
             <li>✓ Priority support</li>
+            <li>✓ Custom integrations</li>
           </ul>
-          <a href="#contact" class="block w-full bg-[#ff3c00] hover:bg-[#ffe600] text-black py-2 rounded">Choose Pro</a>
+          <a href="#contact" class="cta-btn block w-full py-2 rounded">Upgrade to Pro</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Blog (Clank cards) -->
-  <section id="blog" class="py-20 bg-black/20 tag">
+  <!-- Testimonials -->
+  <section id="testimonials" class="py-20 bg-gray-900/30">
     <div class="max-w-6xl mx-auto px-4">
-      <h2 class="font-head text-4xl text-center text-[#ff3c00] mb-12 gsap-hidden">Latest from the Grid</h2>
+      <h2 class="section-head text-4xl font-bold text-center mb-12 fade-in">What Our Users Say</h2>
       <div class="grid md:grid-cols-3 gap-8">
-        <div class="bg-black/50 p-4 rounded-xl tilt neon glow-cyan gsap-hidden">
-          <img src="https://upload.wikimedia.org/wikipedia/en/5/5e/Clank.png" alt="Clank" class="w-full h-48 object-cover rounded-md mb-4" />
-          <h3 class="font-head text-xl text-[#ffe600] mb-2">Clank: The Robot Who Rewired the Future</h3>
-          <p class="text-gray-300 text-sm mb-2">When the humble sidekick becomes the mastermind behind a new wave of automation, the industry takes notice.</p>
-          <a href="#" class="text-[#ff3c00] hover:underline">Read More →</a>
+        <div class="card p-6 rounded-lg fade-in">
+          <p class="italic text-gray-300 mb-4">"TaskFlow transformed our product development – we ship twice as fast now. The AI suggestions are spot on."</p>
+          <p class="font-semibold text-indigo-200">– Lena, CTO @ NovaTech</p>
         </div>
-        <div class="bg-black/50 p-4 rounded-xl tilt neon glow-cyan gsap-hidden">
-          <img src="https://upload.wikimedia.org/wikipedia/en/5/5e/Clank.png" alt="Clank" class="w-full h-48 object-cover rounded-md mb-4" />
-          <h3 class="font-head text-xl text-[#ffe600] mb-2">AI Companions – What Clank Teaches Us</h3>
-          <p class="text-gray-300 text-sm mb-2">Exploring how a lovable robot can inspire next‑gen AI assistants that learn, adapt, and collaborate.</p>
-          <a href="#" class="text-[#ff3c00] hover:underline">Read More →</a>
+        <div class="card p-6 rounded-lg fade-in">
+          <p class="italic text-gray-300 mb-4">"The integration with Slack and GitHub saved us hours every week. The UI feels premium and intuitive."</p>
+          <p class="font-semibold text-indigo-200">– Marco, Product Lead @ BrightStart</p>
         </div>
-        <div class="bg-black/50 p-4 rounded-xl tilt neon glow-cyan gsap-hidden">
-          <img src="https://upload.wikimedia.org/wikipedia/en/5/5e/Clank.png" alt="Clank" class="w-full h-48 object-cover rounded-md mb-4" />
-          <h3 class="font-head text-xl text-[#ffe600] mb-2">From Ratchet's Sidekick to SaaS</h3>
-          <p class="text-gray-300 text-sm mb-2">A deep dive into how partnership dynamics in games translate to client‑provider relationships in SaaS.</p>
-          <a href="#" class="text-[#ff3c00] hover:underline">Read More →</a>
+        <div class="card p-6 rounded-lg fade-in">
+          <p class="italic text-gray-300 mb-4">"We love the real‑time dashboards. Decision‑making is now data‑driven and effortless."</p>
+          <p class="font-semibold text-indigo-200">– Sofia, PM @ CloudWorks</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-20">
+    <div class="max-w-5xl mx-auto px-4">
+      <h2 class="section-head text-4xl font-bold text-center mb-12 fade-in">FAQ</h2>
+      <div class="space-y-4">
+        <details class="card p-4 rounded-lg fade-in">
+          <summary class="font-semibold text-indigo-200">Is there a free tier?</summary>
+          <p class="mt-2 text-gray-300">Yes – our Free plan includes unlimited projects for up to three team members and basic AI insights.</p>
+        </details>
+        <details class="card p-4 rounded-lg fade-in">
+          <summary class="font-semibold text-indigo-200">How does the AI work?</summary>
+          <p class="mt-2 text-gray-300">We use a fine‑tuned GPT‑4 model to analyze your backlog, suggest tasks, estimate effort and surface bottlenecks.</p>
+        </details>
+        <details class="card p-4 rounded-lg fade-in">
+          <summary class="font-semibold text-indigo-200">Can I integrate my existing tools?</summary>
+          <p class="mt-2 text-gray-300">TaskFlow ships with native Slack, GitHub, Google Calendar and Zapier integrations. Additional webhooks are supported.</p>
+        </details>
+        <details class="card p-4 rounded-lg fade-in">
+          <summary class="font-semibold text-indigo-200">Is my data secure?</summary>
+          <p class="mt-2 text-gray-300">All data is encrypted at rest and in transit. We are GDPR‑compliant and undergo regular security audits.</p>
+        </details>
       </div>
     </div>
   </section>
 
   <!-- CTA -->
-  <section id="contact" class="py-20 text-center tag">
+  <section id="contact" class="py-20 text-center">
     <div class="max-w-3xl mx-auto px-4">
-      <h2 class="font-head text-4xl text-[#00d4ff] mb-6 gsap-hidden">Ready to Hack Your Workflow?</h2>
-      <p class="text-xl text-[#ffe600] mb-8 gsap-hidden">Start your 14‑day free trial – no credit card required.</p>
-      <a href="#" class="inline-block bg-[#ff3c00] hover:bg-[#ffe600] text-black font-bold py-3 px-8 rounded-full neon glow-red pulse">Start Free Trial</a>
+      <h2 class="section-head text-4xl font-bold mb-6 fade-in">Ready to Accelerate Your Projects?</h2>
+      <p class="text-lg text-gray-300 mb-8 fade-in">Start your free trial today – no credit card required.</p>
+      <a href="#" class="cta-btn inline-block py-3 px-8 rounded-md font-medium fade-in">Start Free Trial</a>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="bg-black/70 py-8 tag">
-    <div class="max-w-6xl mx-auto px-4 text-center text-gray-400">
-      <p>&copy; <script>document.write(new Date().getFullYear())</script> TaskFlow. All rights reserved.</p>
-    </div>
+  <footer class="py-8 text-center text-gray-500">
+    <p>&copy; <script>document.write(new Date().getFullYear())</script> TaskFlow. All rights reserved.</p>
   </footer>
 
   <script>
-    // GSAP scroll animations
-    gsap.utils.toArray('.gsap-hidden').forEach(el=>{
-      gsap.fromTo(el,{opacity:0,y:30},{opacity:1,y:0,scrollTrigger:{trigger:el,start:'top 80%',toggleActions:'play none none none'},duration:0.8, ease:'power2.out'});
-    });
-    // Hero glitch on load
-    gsap.from('#hero-title', {duration:1.2, textShadow:'0 0 0 #ffe600', onComplete()=>{gsap.to('#hero-title',{textShadow:'2px 2px 0 #ff3c00, -2px -2px 0 #00d4ff',repeat:3,yoyo:true,duration:0.2});}});
-    // Pulse button
-    gsap.to('.pulse', {scale:1.05, repeat:-1, yoyo:true, duration:0.8, ease:'sine.inOut'});
+    // Simple IntersectionObserver for fade‑in
+    const observer = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },{threshold:0.1});
+    document.querySelectorAll('.fade-in').forEach(el=>observer.observe(el));
   </script>
 </body>
 </html>
